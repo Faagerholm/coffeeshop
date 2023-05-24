@@ -1,0 +1,39 @@
+{
+  "products": [
+    {
+      "id": 1,
+      "name": "Yirgacheffe",
+      "description": "Yirgacheffe is a coffee region in southern Ethiopia that produces distinctively floral- and fruit-toned coffees from traditional varieties of Arabica long grown in the region. Yirgacheffe coffees like this one processed by the wet or washed method (fruit skin and pulp is removed before drying) typically express great aromatic complexity and intensity with a particular emphasis on citrus and floral notes.",
+      "price": 15.00,
+      "quantity": 250
+    },
+    {
+      "id": 2,
+      "name": "Sidamo",
+      "description": "Sidamo is a coffee region in southern Ethiopia that produces distinctive coffees from traditional varieties of Arabica long grown in the region. Sidamo coffees like this one processed by the wet or washed method (fruit skin and pulp is removed before drying) typically express great aromatic complexity and intensity with a particular emphasis on floral notes.",
+      "price": 14.00,
+      "quantity": 250
+    },
+    {
+      "id": 3,
+      "name": "Guji",
+      "description": "Guji is a coffee region in southern Ethiopia that produces distinctive coffees from traditional varieties of Arabica long grown in the region. Guji coffees like this one processed by the wet or washed method (fruit skin and pulp is removed before drying) typically express great aromatic complexity and intensity with a particular emphasis on floral notes.",
+      "price": 14.00,
+      "quantity": 250
+    },
+    {
+      "id": 4,
+      "name": "Costa Rica - La Pastora",
+      "description": "Costa Rica is a coffee origin and La Pastora is a coffee farm in Costa Rica. This coffee is a blend of the Caturra and Catuai varieties of Arabica. It is processed by the wet or washed method (fruit skin and pulp is removed before drying) and is certified organic. Costa Rica coffees like this one typically express great aromatic complexity and intensity with a particular emphasis on citrus and floral notes.",
+      "price": 12.50,
+      "quantity": 250
+    },
+    {
+      "id": 5,
+      "name": "Panama - Finca Hartmann (Natural Geisha)",
+      "description": "Panama is a coffee origin and Finca Hartmann is a coffee farm in Panama. This coffee is a variety of Arabica known as Geisha, processed by the natural method (dried inside the fruit). Panama coffees like this one typically express great aromatic complexity and intensity with a particular emphasis on citrus and floral notes.",
+      "price": 25.00,
+      "quantity": 250
+    }
+  ]
+}

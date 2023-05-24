@@ -1,0 +1,289 @@
+syntax = "proto3";
+
+package coffeeshop;
+
+option go_package = "./proto";
+/* This is a demo application of a coffee shop.
+    The application is built using microservices and grpc.
+    The application is built using the following services:
+    - Identity service
+    - Checkout service
+    - Warehouse service
+    - Cart service
+    - Payment service
+    - Shipping service
+    - Email service
+    - Frontend service (using grpc-gateway)
+
+*/
+
+// Prefix is used to identify the type of the ID
+enum Prefix {
+    PREFIX_UNSPECIFIED = 0;
+    PREFIX_USER = 1;
+    PREFIX_PRODUCT = 2;
+    PREFIX_PAYMENT = 3;
+}
+
+// ID is a hash of the type and the id
+// this will allow us to identify the type of the ID
+// and the ID itself
+message ID {
+  Prefix prefix = 1;
+  int64 value = 2; }
+
+message Product {
+    ID id = 1;
+    string name = 2;
+    string description = 3;
+    float price = 5;
+    int32 quantity = 6;
+}
+message User {
+  ID id = 1;
+  string email = 2;
+  string first_name = 3;
+  string last_name = 4;
+  Address address = 5;
+}
+
+message Address {
+  string street = 1;
+  string city = 2;
+  string zip_code = 3;
+  string country = 4;
+  optional string apartment = 5;
+}
+
+message Empty {}
+
+// ---- Identity service ----
+// identity service is responsible for handling user authentication, e.g.:
+// - login
+// - logout
+// - register
+// - forgot password
+// - change password
+
+service IdentityService {
+    rpc Login (LoginRequest) returns (LoginResponse) {}
+    rpc ValidateToken(ValidateTokenRequest) returns (ValidateTokenResponse) {}
+}
+
+message LoginRequest {
+    string email = 1;
+    string password = 2;
+}
+
+message LoginResponse {
+    User user = 1;
+    string token = 2;
+}
+
+message ValidateTokenRequest {
+    string token = 1;
+}
+
+message ValidateTokenResponse {
+    bool valid = 1;
+}
+
+message ChangePasswordRequest {
+  string email = 1;
+  string old_password = 2;
+  string new_password = 3;
+}
+
+message ChangePasswordResponse {
+  string message = 1; 
+}
+
+// ---- Checkout service ----
+// checkout service is responsible for handling the checkout process, e.g.:
+// Place order
+
+service CheckoutService {
+    rpc PlaceOrder(PlaceOrderRequest) returns (PlaceOrderResponse) {}
+}
+
+message OrderResult {
+  ID order_id = 1;
+  string tracking_id = 2;
+  Address shipping_address = 3;
+  repeated Product products = 4;
+}
+
+message PlaceOrderRequest {
+    User user = 1;
+    repeated Product products = 2;
+}
+
+message PlaceOrderResponse {
+    string message = 1;
+}
+
+// ---- Warehouse service ----
+// warehouse service is responsible for handling the warehouse, e.g.:
+// - List products
+// - Get product
+// - Search products
+
+service WarehouseService {
+  rpc ListProducts(Empty) returns (ListProductsResponse) {}
+  rpc GetProduct(GetProductRequest) returns (GetProductResponse) {}
+  rpc SearchProducts(SearchProductsRequest) returns (SearchProductsResponse) {}
+}
+
+message ListProductsResponse {
+  repeated Product products = 1;
+}
+
+message GetProductRequest {
+  ID id = 1;
+}
+
+message GetProductResponse {
+  Product product = 1;
+}
+
+message SearchProductsRequest {
+  string query = 1;
+}
+
+message SearchProductsResponse {
+  repeated Product products = 1;
+}
+
+// ---- Cart service ----
+//  cart service is responsible for handling the users cart, e.g.:
+// - Add item
+// - Get cart
+// - Empty cart
+
+
+service CartService {
+  rpc AddItem(AddItemRequest) returns (AddItemResponse) {}
+  rpc GetCart(GetCartRequest) returns (GetCartResponse) {}
+  rpc EmptyCart(EmptyCartRequest) returns (EmptyCartResponse) {}
+}
+
+message AddItemRequest {
+  ID user_id = 1;
+  Product product = 2;
+}
+
+message AddItemResponse {
+  string message = 1;
+}
+
+message GetCartRequest {
+  ID user_id = 1;
+}
+
+message GetCartResponse {
+  repeated Product products = 1;
+}
+
+message EmptyCartRequest {
+  ID user_id = 1;
+}
+
+message EmptyCartResponse {}
+
+// ---- Payment service ----
+// payment service is responsible for handling the payment process, e.g.:
+// - Create payment
+
+service PaymentService {
+    rpc CreatePayment (CreatePaymentRequest) returns (CreatePaymentResponse) {}
+}
+
+message CreatePaymentRequest {
+    ID user_id = 1;
+    repeated Product products = 2;
+}
+
+message CreatePaymentResponse {
+    string transaction_id = 1;
+}
+
+// ---- Shipping service ----
+// shipping service is responsible for handling the shipping process, e.g.:
+// - ship order
+
+service ShippingService {
+    rpc ShipOrder (ShipOrderRequest) returns (ShipOrderResponse) {}
+}
+
+message ShipOrderRequest {
+  Address address = 1;
+  repeated Product products = 2;
+}
+
+message ShipOrderResponse {
+  string tracking_id = 1;
+  float price = 2;
+}
+
+// ---- Email service ----
+// email service is responsible for handling the email process, e.g.: 
+// - Send email
+
+service EmailService {
+    rpc SendEmail (SendEmailRequest) returns (Empty) {}
+}
+
+message SendEmailRequest {
+    string email = 1;
+    string subject = 2;
+    string body = 3;
+}
+
+message SendEmailResponse {
+    string message = 1;
+}
+
+// --- Frontend service (using grpc-gateway) ---
+// frontend service is responsible for handling the frontend, e.g.:
+// serving the application in a secure manner ensuring that the user is authenticated
+// - Login
+// - Change password
+// - Add item to cart
+// - Reset cart
+// - Checkout
+
+import "google/api/annotations.proto";
+
+service FrontendService {
+    rpc Login (LoginRequest) returns (LoginResponse) {
+      option(google.api.http) = {
+        post: "/v1/login"
+        body: "*"
+      };
+    }
+    rpc ChangePassword (ChangePasswordRequest) returns (ChangePasswordResponse) {
+      option(google.api.http) = {
+        post: "/v1/change-password"
+        body: "*"
+      };
+    }
+    rpc AddItem (AddItemRequest) returns (AddItemResponse) {
+      option(google.api.http) = {
+        post: "/v1/add-item"
+        body: "*"
+      };
+    }
+    rpc ResetCart (EmptyCartRequest) returns (EmptyCartResponse) {
+      option(google.api.http) = {
+        post: "/v1/reset-cart"
+        body: "*"
+      };
+    }
+    rpc Checkout (PlaceOrderRequest) returns (PlaceOrderResponse) {
+      option(google.api.http) = {
+        post: "/v1/checkout"
+        body: "*"
+      };
+    }
+}
+
