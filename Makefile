@@ -1,5 +1,4 @@
-CURRENT_DIR := $(dir $(MAKEFILE_LIST))
-PROTOC_GEN_GO := $(GOPATH)/bin/protoc-gen-go
+CURRENT_DIR := $(dir $(MAKEFILE_LIST)) PROTOC_GEN_GO := $(GOPATH)/bin/protoc-gen-go
 
 $(PROTOC_GEN_GO):
 	go install github.com/golang/protobuf/protoc-gen-go@$(PROTOC_GEN_GO_VERSION)

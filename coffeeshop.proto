@@ -1,8 +1,6 @@
 syntax = "proto3";
-
 package coffeeshop;
 
-option go_package = "./proto";
 /* This is a demo application of a coffee shop.
     The application is built using microservices and grpc.
     The application is built using the following services:
@@ -17,6 +15,9 @@ option go_package = "./proto";
 
 */
 
+option go_package = "./proto";
+import "google/api/annotations.proto";
+
 // Prefix is used to identify the type of the ID
 enum Prefix {
     PREFIX_UNSPECIFIED = 0;
@@ -26,11 +27,13 @@ enum Prefix {
 }
 
 // ID is a hash of the type and the id
-// this will allow us to identify the type of the ID
-// and the ID itself
+// allows us to identify the type of ID
+//
+// hash<prefix,id>
 message ID {
   Prefix prefix = 1;
-  int64 value = 2; }
+  int64 value = 2; 
+}
 
 message Product {
     ID id = 1;
@@ -39,6 +42,7 @@ message Product {
     float price = 5;
     int32 quantity = 6;
 }
+
 message User {
   ID id = 1;
   string email = 2;
@@ -55,7 +59,32 @@ message Address {
   optional string apartment = 5;
 }
 
+// Placeholder for empty return messages
 message Empty {}
+
+// ---- Email service ----
+// email service is responsible for handling the email process, e.g.: 
+// - Send email
+
+service EmailService {
+    rpc SendEmail (SendEmailRequest) returns (Empty) {}
+}
+
+message SendEmailRequest {
+    string email = 1;
+    string subject = 2;
+    string body = 3;
+}
+
+message SendEmailResponse {
+    string message = 1;
+}
+
+
+
+
+
+
 
 // ---- Identity service ----
 // identity service is responsible for handling user authentication, e.g.:
@@ -66,8 +95,9 @@ message Empty {}
 // - change password
 
 service IdentityService {
-    rpc Login (LoginRequest) returns (LoginResponse) {}
-    rpc ValidateToken(ValidateTokenRequest) returns (ValidateTokenResponse) {}
+    rpc Login (LoginRequest) returns (LoginResponse);
+    rpc ValidateToken(ValidateTokenRequest) returns (ValidateTokenResponse);
+    rpc ChangePassword(ChangePasswordRequest) returns (ChangePasswordResponse);
 }
 
 message LoginRequest {
@@ -224,25 +254,6 @@ message ShipOrderResponse {
   string tracking_id = 1;
   float price = 2;
 }
-
-// ---- Email service ----
-// email service is responsible for handling the email process, e.g.: 
-// - Send email
-
-service EmailService {
-    rpc SendEmail (SendEmailRequest) returns (Empty) {}
-}
-
-message SendEmailRequest {
-    string email = 1;
-    string subject = 2;
-    string body = 3;
-}
-
-message SendEmailResponse {
-    string message = 1;
-}
-
 // --- Frontend service (using grpc-gateway) ---
 // frontend service is responsible for handling the frontend, e.g.:
 // serving the application in a secure manner ensuring that the user is authenticated
@@ -252,7 +263,6 @@ message SendEmailResponse {
 // - Reset cart
 // - Checkout
 
-import "google/api/annotations.proto";
 
 service FrontendService {
     rpc Login (LoginRequest) returns (LoginResponse) {

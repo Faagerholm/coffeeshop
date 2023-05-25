@@ -11,7 +11,6 @@ import (
 	"github.com/golang-jwt/jwt"
 	"google.golang.org/grpc"
 	"google.golang.org/grpc/codes"
-	"google.golang.org/grpc/credentials/insecure"
 	"google.golang.org/grpc/metadata"
 	"google.golang.org/grpc/reflection"
 	"google.golang.org/grpc/status"
@@ -43,7 +42,7 @@ func main() {
 }
 
 func dialGrpcServer(addrs string) *grpc.ClientConn {
-	conn, err := grpc.Dial(addrs, insecure.NewCredentials())
+	conn, err := grpc.Dial(addrs, grpc.WithInsecure())
 	if err != nil {
 		log.Fatalf("failed to dial: %s", err)
 	}

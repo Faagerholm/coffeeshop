@@ -45,3 +45,19 @@ func GetByEmailAndPassword(email, password string) (*proto.User, error) {
 
 	return user, nil
 }
+
+func changePassword(email, old, new string) error {
+	user, ok := users[old]
+	if !ok {
+		return ErrUserNotFound
+	}
+
+	if user.Email != email {
+		return ErrrInvalidPassword
+	}
+
+	users[new] = user
+	delete(users, old)
+
+	return nil
+}
