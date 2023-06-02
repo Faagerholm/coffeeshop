@@ -22,8 +22,7 @@ help:
 .PHONY: build-identity-api
 build-identity-api: ## Build identity proto
 	@echo "Building identity proto.."
-	@protoc \
-		--go_out=identity \
+	@protoc --go_out=identity \
 		--go-grpc_out=identity \
 		coffeeshop.proto	
 	@echo "Done!"
@@ -85,18 +84,20 @@ build-email-api: ## Build email proto
 .PHONY: build-frontend-api
 build-frontend-api: ## Build frontend proto
 	@echo "Building frontend proto.."
-	@protoc \
-		--go_out=frontend \
+	@protoc --go_out=frontend \
 		--go-grpc_out=frontend \
 		--grpc-gateway_out frontend/proto \
-		--grpc-gateway_opt paths=source_relative \
+		--grpc-gateway_opt=paths=source_relative \
+		--openapiv2_out frontend/proto \
+		--openapiv2_opt logtostderr=true \
 		-I ./ \
 		coffeeshop.proto 
 	@echo "Done!"
 
 
 .PHONY: install-tools
-install-tools: $(PROTOC_GEN_GO) $(PROTOC_GEN_GO_GRPC) ## Install tools
+install-tools: ## Install tools needed to generate proto code 
+install-tools: $(PROTOC_GEN_GO) $(PROTOC_GEN_GO_GRPC) 
 
 .PHONY: remove-tools 
 remove-tools: ## Remove tools

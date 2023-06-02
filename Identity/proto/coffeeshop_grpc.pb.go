@@ -109,9 +109,8 @@ var EmailService_ServiceDesc = grpc.ServiceDesc{
 }
 
 const (
-	IdentityService_Login_FullMethodName          = "/coffeeshop.IdentityService/Login"
-	IdentityService_ValidateToken_FullMethodName  = "/coffeeshop.IdentityService/ValidateToken"
-	IdentityService_ChangePassword_FullMethodName = "/coffeeshop.IdentityService/ChangePassword"
+	IdentityService_Login_FullMethodName         = "/coffeeshop.IdentityService/Login"
+	IdentityService_ValidateToken_FullMethodName = "/coffeeshop.IdentityService/ValidateToken"
 )
 
 // IdentityServiceClient is the client API for IdentityService service.
@@ -120,7 +119,6 @@ const (
 type IdentityServiceClient interface {
 	Login(ctx context.Context, in *LoginRequest, opts ...grpc.CallOption) (*LoginResponse, error)
 	ValidateToken(ctx context.Context, in *ValidateTokenRequest, opts ...grpc.CallOption) (*ValidateTokenResponse, error)
-	ChangePassword(ctx context.Context, in *ChangePasswordRequest, opts ...grpc.CallOption) (*ChangePasswordResponse, error)
 }
 
 type identityServiceClient struct {
@@ -149,22 +147,12 @@ func (c *identityServiceClient) ValidateToken(ctx context.Context, in *ValidateT
 	return out, nil
 }
 
-func (c *identityServiceClient) ChangePassword(ctx context.Context, in *ChangePasswordRequest, opts ...grpc.CallOption) (*ChangePasswordResponse, error) {
-	out := new(ChangePasswordResponse)
-	err := c.cc.Invoke(ctx, IdentityService_ChangePassword_FullMethodName, in, out, opts...)
-	if err != nil {
-		return nil, err
-	}
-	return out, nil
-}
-
 // IdentityServiceServer is the server API for IdentityService service.
 // All implementations must embed UnimplementedIdentityServiceServer
 // for forward compatibility
 type IdentityServiceServer interface {
 	Login(context.Context, *LoginRequest) (*LoginResponse, error)
 	ValidateToken(context.Context, *ValidateTokenRequest) (*ValidateTokenResponse, error)
-	ChangePassword(context.Context, *ChangePasswordRequest) (*ChangePasswordResponse, error)
 	mustEmbedUnimplementedIdentityServiceServer()
 }
 
@@ -177,9 +165,6 @@ func (UnimplementedIdentityServiceServer) Login(context.Context, *LoginRequest) 
 }
 func (UnimplementedIdentityServiceServer) ValidateToken(context.Context, *ValidateTokenRequest) (*ValidateTokenResponse, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method ValidateToken not implemented")
-}
-func (UnimplementedIdentityServiceServer) ChangePassword(context.Context, *ChangePasswordRequest) (*ChangePasswordResponse, error) {
-	return nil, status.Errorf(codes.Unimplemented, "method ChangePassword not implemented")
 }
 func (UnimplementedIdentityServiceServer) mustEmbedUnimplementedIdentityServiceServer() {}
 
@@ -230,24 +215,6 @@ func _IdentityService_ValidateToken_Handler(srv interface{}, ctx context.Context
 	return interceptor(ctx, in, info, handler)
 }
 
-func _IdentityService_ChangePassword_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
-	in := new(ChangePasswordRequest)
-	if err := dec(in); err != nil {
-		return nil, err
-	}
-	if interceptor == nil {
-		return srv.(IdentityServiceServer).ChangePassword(ctx, in)
-	}
-	info := &grpc.UnaryServerInfo{
-		Server:     srv,
-		FullMethod: IdentityService_ChangePassword_FullMethodName,
-	}
-	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
-		return srv.(IdentityServiceServer).ChangePassword(ctx, req.(*ChangePasswordRequest))
-	}
-	return interceptor(ctx, in, info, handler)
-}
-
 // IdentityService_ServiceDesc is the grpc.ServiceDesc for IdentityService service.
 // It's only intended for direct use with grpc.RegisterService,
 // and not to be introspected or modified (even as a copy)
@@ -262,10 +229,6 @@ var IdentityService_ServiceDesc = grpc.ServiceDesc{
 		{
 			MethodName: "ValidateToken",
 			Handler:    _IdentityService_ValidateToken_Handler,
-		},
-		{
-			MethodName: "ChangePassword",
-			Handler:    _IdentityService_ChangePassword_Handler,
 		},
 	},
 	Streams:  []grpc.StreamDesc{},

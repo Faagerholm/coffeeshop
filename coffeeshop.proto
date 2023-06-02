@@ -97,7 +97,7 @@ message SendEmailResponse {
 service IdentityService {
     rpc Login (LoginRequest) returns (LoginResponse);
     rpc ValidateToken(ValidateTokenRequest) returns (ValidateTokenResponse);
-    rpc ChangePassword(ChangePasswordRequest) returns (ChangePasswordResponse);
+    // TODO: implement changePassword method
 }
 
 message LoginRequest {

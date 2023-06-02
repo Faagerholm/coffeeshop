@@ -33,14 +33,7 @@ func (s server) Login(ctx context.Context, req *proto.LoginRequest) (*proto.Logi
 	return &proto.LoginResponse{User: user, Token: token}, nil
 }
 
-func (s server) ChangePassword(ctx context.Context, req *proto.ChangePasswordRequest) (*proto.ChangePasswordResponse, error) {
-	err := changePassword(req.Email, req.OldPassword, req.NewPassword)
-	if err != nil {
-		return nil, status.Errorf(codes.NotFound, "failed to change password: %v", err)
-	}
-
-	return &proto.ChangePasswordResponse{Message: "Successfully changed password!"}, nil
-}
+// TODO: implement change password, use changePassword function
 
 // -- JWT --
 func generateJWT(in string) (string, error) {
