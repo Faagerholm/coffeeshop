@@ -1,0 +1,486 @@
+{
+  "swagger": "2.0",
+  "info": {
+    "title": "coffeeshop.proto",
+    "version": "version not set"
+  },
+  "tags": [
+    {
+      "name": "EmailService"
+    },
+    {
+      "name": "IdentityService"
+    },
+    {
+      "name": "CheckoutService"
+    },
+    {
+      "name": "WarehouseService"
+    },
+    {
+      "name": "CartService"
+    },
+    {
+      "name": "PaymentService"
+    },
+    {
+      "name": "ShippingService"
+    },
+    {
+      "name": "FrontendService"
+    }
+  ],
+  "consumes": [
+    "application/json"
+  ],
+  "produces": [
+    "application/json"
+  ],
+  "paths": {
+    "/v1/add-item": {
+      "post": {
+        "operationId": "FrontendService_AddItem",
+        "responses": {
+          "200": {
+            "description": "A successful response.",
+            "schema": {
+              "$ref": "#/definitions/coffeeshopAddItemResponse"
+            }
+          },
+          "default": {
+            "description": "An unexpected error response.",
+            "schema": {
+              "$ref": "#/definitions/rpcStatus"
+            }
+          }
+        },
+        "parameters": [
+          {
+            "name": "body",
+            "in": "body",
+            "required": true,
+            "schema": {
+              "$ref": "#/definitions/coffeeshopAddItemRequest"
+            }
+          }
+        ],
+        "tags": [
+          "FrontendService"
+        ]
+      }
+    },
+    "/v1/change-password": {
+      "post": {
+        "operationId": "FrontendService_ChangePassword",
+        "responses": {
+          "200": {
+            "description": "A successful response.",
+            "schema": {
+              "$ref": "#/definitions/coffeeshopChangePasswordResponse"
+            }
+          },
+          "default": {
+            "description": "An unexpected error response.",
+            "schema": {
+              "$ref": "#/definitions/rpcStatus"
+            }
+          }
+        },
+        "parameters": [
+          {
+            "name": "body",
+            "in": "body",
+            "required": true,
+            "schema": {
+              "$ref": "#/definitions/coffeeshopChangePasswordRequest"
+            }
+          }
+        ],
+        "tags": [
+          "FrontendService"
+        ]
+      }
+    },
+    "/v1/checkout": {
+      "post": {
+        "operationId": "FrontendService_Checkout",
+        "responses": {
+          "200": {
+            "description": "A successful response.",
+            "schema": {
+              "$ref": "#/definitions/coffeeshopPlaceOrderResponse"
+            }
+          },
+          "default": {
+            "description": "An unexpected error response.",
+            "schema": {
+              "$ref": "#/definitions/rpcStatus"
+            }
+          }
+        },
+        "parameters": [
+          {
+            "name": "body",
+            "in": "body",
+            "required": true,
+            "schema": {
+              "$ref": "#/definitions/coffeeshopPlaceOrderRequest"
+            }
+          }
+        ],
+        "tags": [
+          "FrontendService"
+        ]
+      }
+    },
+    "/v1/login": {
+      "post": {
+        "operationId": "FrontendService_Login",
+        "responses": {
+          "200": {
+            "description": "A successful response.",
+            "schema": {
+              "$ref": "#/definitions/coffeeshopLoginResponse"
+            }
+          },
+          "default": {
+            "description": "An unexpected error response.",
+            "schema": {
+              "$ref": "#/definitions/rpcStatus"
+            }
+          }
+        },
+        "parameters": [
+          {
+            "name": "body",
+            "in": "body",
+            "required": true,
+            "schema": {
+              "$ref": "#/definitions/coffeeshopLoginRequest"
+            }
+          }
+        ],
+        "tags": [
+          "FrontendService"
+        ]
+      }
+    },
+    "/v1/reset-cart": {
+      "post": {
+        "operationId": "FrontendService_ResetCart",
+        "responses": {
+          "200": {
+            "description": "A successful response.",
+            "schema": {
+              "$ref": "#/definitions/coffeeshopEmptyCartResponse"
+            }
+          },
+          "default": {
+            "description": "An unexpected error response.",
+            "schema": {
+              "$ref": "#/definitions/rpcStatus"
+            }
+          }
+        },
+        "parameters": [
+          {
+            "name": "body",
+            "in": "body",
+            "required": true,
+            "schema": {
+              "$ref": "#/definitions/coffeeshopEmptyCartRequest"
+            }
+          }
+        ],
+        "tags": [
+          "FrontendService"
+        ]
+      }
+    }
+  },
+  "definitions": {
+    "coffeeshopAddItemRequest": {
+      "type": "object",
+      "properties": {
+        "userId": {
+          "$ref": "#/definitions/coffeeshopID"
+        },
+        "product": {
+          "$ref": "#/definitions/coffeeshopProduct"
+        }
+      }
+    },
+    "coffeeshopAddItemResponse": {
+      "type": "object",
+      "properties": {
+        "message": {
+          "type": "string"
+        }
+      }
+    },
+    "coffeeshopAddress": {
+      "type": "object",
+      "properties": {
+        "street": {
+          "type": "string"
+        },
+        "city": {
+          "type": "string"
+        },
+        "zipCode": {
+          "type": "string"
+        },
+        "country": {
+          "type": "string"
+        },
+        "apartment": {
+          "type": "string"
+        }
+      }
+    },
+    "coffeeshopChangePasswordRequest": {
+      "type": "object",
+      "properties": {
+        "email": {
+          "type": "string"
+        },
+        "oldPassword": {
+          "type": "string"
+        },
+        "newPassword": {
+          "type": "string"
+        }
+      }
+    },
+    "coffeeshopChangePasswordResponse": {
+      "type": "object",
+      "properties": {
+        "message": {
+          "type": "string"
+        }
+      }
+    },
+    "coffeeshopCreatePaymentResponse": {
+      "type": "object",
+      "properties": {
+        "transactionId": {
+          "type": "string"
+        }
+      }
+    },
+    "coffeeshopEmpty": {
+      "type": "object",
+      "title": "Placeholder for empty return messages"
+    },
+    "coffeeshopEmptyCartRequest": {
+      "type": "object",
+      "properties": {
+        "userId": {
+          "$ref": "#/definitions/coffeeshopID"
+        }
+      }
+    },
+    "coffeeshopEmptyCartResponse": {
+      "type": "object"
+    },
+    "coffeeshopGetCartResponse": {
+      "type": "object",
+      "properties": {
+        "products": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/coffeeshopProduct"
+          }
+        }
+      }
+    },
+    "coffeeshopGetProductResponse": {
+      "type": "object",
+      "properties": {
+        "product": {
+          "$ref": "#/definitions/coffeeshopProduct"
+        }
+      }
+    },
+    "coffeeshopID": {
+      "type": "object",
+      "properties": {
+        "prefix": {
+          "$ref": "#/definitions/coffeeshopPrefix"
+        },
+        "value": {
+          "type": "string",
+          "format": "int64"
+        }
+      },
+      "description": "hash\u003cprefix,id\u003e",
+      "title": "ID is a hash of the type and the id\nallows us to identify the type of ID"
+    },
+    "coffeeshopListProductsResponse": {
+      "type": "object",
+      "properties": {
+        "products": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/coffeeshopProduct"
+          }
+        }
+      }
+    },
+    "coffeeshopLoginRequest": {
+      "type": "object",
+      "properties": {
+        "email": {
+          "type": "string"
+        },
+        "password": {
+          "type": "string"
+        }
+      }
+    },
+    "coffeeshopLoginResponse": {
+      "type": "object",
+      "properties": {
+        "user": {
+          "$ref": "#/definitions/coffeeshopUser"
+        },
+        "token": {
+          "type": "string"
+        }
+      }
+    },
+    "coffeeshopPlaceOrderRequest": {
+      "type": "object",
+      "properties": {
+        "user": {
+          "$ref": "#/definitions/coffeeshopUser"
+        },
+        "products": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/coffeeshopProduct"
+          }
+        }
+      }
+    },
+    "coffeeshopPlaceOrderResponse": {
+      "type": "object",
+      "properties": {
+        "message": {
+          "type": "string"
+        }
+      }
+    },
+    "coffeeshopPrefix": {
+      "type": "string",
+      "enum": [
+        "PREFIX_UNSPECIFIED",
+        "PREFIX_USER",
+        "PREFIX_PRODUCT",
+        "PREFIX_PAYMENT"
+      ],
+      "default": "PREFIX_UNSPECIFIED",
+      "title": "Prefix is used to identify the type of the ID"
+    },
+    "coffeeshopProduct": {
+      "type": "object",
+      "properties": {
+        "id": {
+          "$ref": "#/definitions/coffeeshopID"
+        },
+        "name": {
+          "type": "string"
+        },
+        "description": {
+          "type": "string"
+        },
+        "price": {
+          "type": "number",
+          "format": "float"
+        },
+        "quantity": {
+          "type": "integer",
+          "format": "int32"
+        }
+      }
+    },
+    "coffeeshopSearchProductsResponse": {
+      "type": "object",
+      "properties": {
+        "products": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/coffeeshopProduct"
+          }
+        }
+      }
+    },
+    "coffeeshopShipOrderResponse": {
+      "type": "object",
+      "properties": {
+        "trackingId": {
+          "type": "string"
+        },
+        "price": {
+          "type": "number",
+          "format": "float"
+        }
+      }
+    },
+    "coffeeshopUser": {
+      "type": "object",
+      "properties": {
+        "id": {
+          "$ref": "#/definitions/coffeeshopID"
+        },
+        "email": {
+          "type": "string"
+        },
+        "firstName": {
+          "type": "string"
+        },
+        "lastName": {
+          "type": "string"
+        },
+        "address": {
+          "$ref": "#/definitions/coffeeshopAddress"
+        }
+      }
+    },
+    "coffeeshopValidateTokenResponse": {
+      "type": "object",
+      "properties": {
+        "valid": {
+          "type": "boolean"
+        }
+      }
+    },
+    "protobufAny": {
+      "type": "object",
+      "properties": {
+        "@type": {
+          "type": "string"
+        }
+      },
+      "additionalProperties": {}
+    },
+    "rpcStatus": {
+      "type": "object",
+      "properties": {
+        "code": {
+          "type": "integer",
+          "format": "int32"
+        },
+        "message": {
+          "type": "string"
+        },
+        "details": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/protobufAny"
+          }
+        }
+      }
+    }
+  }
+}

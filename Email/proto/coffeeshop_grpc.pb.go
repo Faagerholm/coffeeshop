@@ -19,126 +19,216 @@ import (
 const _ = grpc.SupportPackageIsVersion7
 
 const (
-	Identity_Login_FullMethodName         = "/coffeeshop.Identity/Login"
-	Identity_ValidateToken_FullMethodName = "/coffeeshop.Identity/ValidateToken"
+	EmailService_SendEmail_FullMethodName = "/coffeeshop.EmailService/SendEmail"
 )
 
-// IdentityClient is the client API for Identity service.
+// EmailServiceClient is the client API for EmailService service.
 //
 // For semantics around ctx use and closing/ending streaming RPCs, please refer to https://pkg.go.dev/google.golang.org/grpc/?tab=doc#ClientConn.NewStream.
-type IdentityClient interface {
+type EmailServiceClient interface {
+	SendEmail(ctx context.Context, in *SendEmailRequest, opts ...grpc.CallOption) (*Empty, error)
+}
+
+type emailServiceClient struct {
+	cc grpc.ClientConnInterface
+}
+
+func NewEmailServiceClient(cc grpc.ClientConnInterface) EmailServiceClient {
+	return &emailServiceClient{cc}
+}
+
+func (c *emailServiceClient) SendEmail(ctx context.Context, in *SendEmailRequest, opts ...grpc.CallOption) (*Empty, error) {
+	out := new(Empty)
+	err := c.cc.Invoke(ctx, EmailService_SendEmail_FullMethodName, in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+// EmailServiceServer is the server API for EmailService service.
+// All implementations must embed UnimplementedEmailServiceServer
+// for forward compatibility
+type EmailServiceServer interface {
+	SendEmail(context.Context, *SendEmailRequest) (*Empty, error)
+	mustEmbedUnimplementedEmailServiceServer()
+}
+
+// UnimplementedEmailServiceServer must be embedded to have forward compatible implementations.
+type UnimplementedEmailServiceServer struct {
+}
+
+func (UnimplementedEmailServiceServer) SendEmail(context.Context, *SendEmailRequest) (*Empty, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method SendEmail not implemented")
+}
+func (UnimplementedEmailServiceServer) mustEmbedUnimplementedEmailServiceServer() {}
+
+// UnsafeEmailServiceServer may be embedded to opt out of forward compatibility for this service.
+// Use of this interface is not recommended, as added methods to EmailServiceServer will
+// result in compilation errors.
+type UnsafeEmailServiceServer interface {
+	mustEmbedUnimplementedEmailServiceServer()
+}
+
+func RegisterEmailServiceServer(s grpc.ServiceRegistrar, srv EmailServiceServer) {
+	s.RegisterService(&EmailService_ServiceDesc, srv)
+}
+
+func _EmailService_SendEmail_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(SendEmailRequest)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(EmailServiceServer).SendEmail(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: EmailService_SendEmail_FullMethodName,
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(EmailServiceServer).SendEmail(ctx, req.(*SendEmailRequest))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
+// EmailService_ServiceDesc is the grpc.ServiceDesc for EmailService service.
+// It's only intended for direct use with grpc.RegisterService,
+// and not to be introspected or modified (even as a copy)
+var EmailService_ServiceDesc = grpc.ServiceDesc{
+	ServiceName: "coffeeshop.EmailService",
+	HandlerType: (*EmailServiceServer)(nil),
+	Methods: []grpc.MethodDesc{
+		{
+			MethodName: "SendEmail",
+			Handler:    _EmailService_SendEmail_Handler,
+		},
+	},
+	Streams:  []grpc.StreamDesc{},
+	Metadata: "coffeeshop.proto",
+}
+
+const (
+	IdentityService_Login_FullMethodName         = "/coffeeshop.IdentityService/Login"
+	IdentityService_ValidateToken_FullMethodName = "/coffeeshop.IdentityService/ValidateToken"
+)
+
+// IdentityServiceClient is the client API for IdentityService service.
+//
+// For semantics around ctx use and closing/ending streaming RPCs, please refer to https://pkg.go.dev/google.golang.org/grpc/?tab=doc#ClientConn.NewStream.
+type IdentityServiceClient interface {
 	Login(ctx context.Context, in *LoginRequest, opts ...grpc.CallOption) (*LoginResponse, error)
 	ValidateToken(ctx context.Context, in *ValidateTokenRequest, opts ...grpc.CallOption) (*ValidateTokenResponse, error)
 }
 
-type identityClient struct {
+type identityServiceClient struct {
 	cc grpc.ClientConnInterface
 }
 
-func NewIdentityClient(cc grpc.ClientConnInterface) IdentityClient {
-	return &identityClient{cc}
+func NewIdentityServiceClient(cc grpc.ClientConnInterface) IdentityServiceClient {
+	return &identityServiceClient{cc}
 }
 
-func (c *identityClient) Login(ctx context.Context, in *LoginRequest, opts ...grpc.CallOption) (*LoginResponse, error) {
+func (c *identityServiceClient) Login(ctx context.Context, in *LoginRequest, opts ...grpc.CallOption) (*LoginResponse, error) {
 	out := new(LoginResponse)
-	err := c.cc.Invoke(ctx, Identity_Login_FullMethodName, in, out, opts...)
+	err := c.cc.Invoke(ctx, IdentityService_Login_FullMethodName, in, out, opts...)
 	if err != nil {
 		return nil, err
 	}
 	return out, nil
 }
 
-func (c *identityClient) ValidateToken(ctx context.Context, in *ValidateTokenRequest, opts ...grpc.CallOption) (*ValidateTokenResponse, error) {
+func (c *identityServiceClient) ValidateToken(ctx context.Context, in *ValidateTokenRequest, opts ...grpc.CallOption) (*ValidateTokenResponse, error) {
 	out := new(ValidateTokenResponse)
-	err := c.cc.Invoke(ctx, Identity_ValidateToken_FullMethodName, in, out, opts...)
+	err := c.cc.Invoke(ctx, IdentityService_ValidateToken_FullMethodName, in, out, opts...)
 	if err != nil {
 		return nil, err
 	}
 	return out, nil
 }
 
-// IdentityServer is the server API for Identity service.
-// All implementations must embed UnimplementedIdentityServer
+// IdentityServiceServer is the server API for IdentityService service.
+// All implementations must embed UnimplementedIdentityServiceServer
 // for forward compatibility
-type IdentityServer interface {
+type IdentityServiceServer interface {
 	Login(context.Context, *LoginRequest) (*LoginResponse, error)
 	ValidateToken(context.Context, *ValidateTokenRequest) (*ValidateTokenResponse, error)
-	mustEmbedUnimplementedIdentityServer()
+	mustEmbedUnimplementedIdentityServiceServer()
 }
 
-// UnimplementedIdentityServer must be embedded to have forward compatible implementations.
-type UnimplementedIdentityServer struct {
+// UnimplementedIdentityServiceServer must be embedded to have forward compatible implementations.
+type UnimplementedIdentityServiceServer struct {
 }
 
-func (UnimplementedIdentityServer) Login(context.Context, *LoginRequest) (*LoginResponse, error) {
+func (UnimplementedIdentityServiceServer) Login(context.Context, *LoginRequest) (*LoginResponse, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method Login not implemented")
 }
-func (UnimplementedIdentityServer) ValidateToken(context.Context, *ValidateTokenRequest) (*ValidateTokenResponse, error) {
+func (UnimplementedIdentityServiceServer) ValidateToken(context.Context, *ValidateTokenRequest) (*ValidateTokenResponse, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method ValidateToken not implemented")
 }
-func (UnimplementedIdentityServer) mustEmbedUnimplementedIdentityServer() {}
+func (UnimplementedIdentityServiceServer) mustEmbedUnimplementedIdentityServiceServer() {}
 
-// UnsafeIdentityServer may be embedded to opt out of forward compatibility for this service.
-// Use of this interface is not recommended, as added methods to IdentityServer will
+// UnsafeIdentityServiceServer may be embedded to opt out of forward compatibility for this service.
+// Use of this interface is not recommended, as added methods to IdentityServiceServer will
 // result in compilation errors.
-type UnsafeIdentityServer interface {
-	mustEmbedUnimplementedIdentityServer()
+type UnsafeIdentityServiceServer interface {
+	mustEmbedUnimplementedIdentityServiceServer()
 }
 
-func RegisterIdentityServer(s grpc.ServiceRegistrar, srv IdentityServer) {
-	s.RegisterService(&Identity_ServiceDesc, srv)
+func RegisterIdentityServiceServer(s grpc.ServiceRegistrar, srv IdentityServiceServer) {
+	s.RegisterService(&IdentityService_ServiceDesc, srv)
 }
 
-func _Identity_Login_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+func _IdentityService_Login_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
 	in := new(LoginRequest)
 	if err := dec(in); err != nil {
 		return nil, err
 	}
 	if interceptor == nil {
-		return srv.(IdentityServer).Login(ctx, in)
+		return srv.(IdentityServiceServer).Login(ctx, in)
 	}
 	info := &grpc.UnaryServerInfo{
 		Server:     srv,
-		FullMethod: Identity_Login_FullMethodName,
+		FullMethod: IdentityService_Login_FullMethodName,
 	}
 	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
-		return srv.(IdentityServer).Login(ctx, req.(*LoginRequest))
+		return srv.(IdentityServiceServer).Login(ctx, req.(*LoginRequest))
 	}
 	return interceptor(ctx, in, info, handler)
 }
 
-func _Identity_ValidateToken_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+func _IdentityService_ValidateToken_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
 	in := new(ValidateTokenRequest)
 	if err := dec(in); err != nil {
 		return nil, err
 	}
 	if interceptor == nil {
-		return srv.(IdentityServer).ValidateToken(ctx, in)
+		return srv.(IdentityServiceServer).ValidateToken(ctx, in)
 	}
 	info := &grpc.UnaryServerInfo{
 		Server:     srv,
-		FullMethod: Identity_ValidateToken_FullMethodName,
+		FullMethod: IdentityService_ValidateToken_FullMethodName,
 	}
 	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
-		return srv.(IdentityServer).ValidateToken(ctx, req.(*ValidateTokenRequest))
+		return srv.(IdentityServiceServer).ValidateToken(ctx, req.(*ValidateTokenRequest))
 	}
 	return interceptor(ctx, in, info, handler)
 }
 
-// Identity_ServiceDesc is the grpc.ServiceDesc for Identity service.
+// IdentityService_ServiceDesc is the grpc.ServiceDesc for IdentityService service.
 // It's only intended for direct use with grpc.RegisterService,
 // and not to be introspected or modified (even as a copy)
-var Identity_ServiceDesc = grpc.ServiceDesc{
-	ServiceName: "coffeeshop.Identity",
-	HandlerType: (*IdentityServer)(nil),
+var IdentityService_ServiceDesc = grpc.ServiceDesc{
+	ServiceName: "coffeeshop.IdentityService",
+	HandlerType: (*IdentityServiceServer)(nil),
 	Methods: []grpc.MethodDesc{
 		{
 			MethodName: "Login",
-			Handler:    _Identity_Login_Handler,
+			Handler:    _IdentityService_Login_Handler,
 		},
 		{
 			MethodName: "ValidateToken",
-			Handler:    _Identity_ValidateToken_Handler,
+			Handler:    _IdentityService_ValidateToken_Handler,
 		},
 	},
 	Streams:  []grpc.StreamDesc{},
@@ -744,89 +834,237 @@ var ShippingService_ServiceDesc = grpc.ServiceDesc{
 }
 
 const (
-	EmailService_SendEmail_FullMethodName = "/coffeeshop.EmailService/SendEmail"
+	FrontendService_Login_FullMethodName          = "/coffeeshop.FrontendService/Login"
+	FrontendService_ChangePassword_FullMethodName = "/coffeeshop.FrontendService/ChangePassword"
+	FrontendService_AddItem_FullMethodName        = "/coffeeshop.FrontendService/AddItem"
+	FrontendService_ResetCart_FullMethodName      = "/coffeeshop.FrontendService/ResetCart"
+	FrontendService_Checkout_FullMethodName       = "/coffeeshop.FrontendService/Checkout"
 )
 
-// EmailServiceClient is the client API for EmailService service.
+// FrontendServiceClient is the client API for FrontendService service.
 //
 // For semantics around ctx use and closing/ending streaming RPCs, please refer to https://pkg.go.dev/google.golang.org/grpc/?tab=doc#ClientConn.NewStream.
-type EmailServiceClient interface {
-	SendEmail(ctx context.Context, in *SendEmailRequest, opts ...grpc.CallOption) (*Empty, error)
+type FrontendServiceClient interface {
+	Login(ctx context.Context, in *LoginRequest, opts ...grpc.CallOption) (*LoginResponse, error)
+	ChangePassword(ctx context.Context, in *ChangePasswordRequest, opts ...grpc.CallOption) (*ChangePasswordResponse, error)
+	AddItem(ctx context.Context, in *AddItemRequest, opts ...grpc.CallOption) (*AddItemResponse, error)
+	ResetCart(ctx context.Context, in *EmptyCartRequest, opts ...grpc.CallOption) (*EmptyCartResponse, error)
+	Checkout(ctx context.Context, in *PlaceOrderRequest, opts ...grpc.CallOption) (*PlaceOrderResponse, error)
 }
 
-type emailServiceClient struct {
+type frontendServiceClient struct {
 	cc grpc.ClientConnInterface
 }
 
-func NewEmailServiceClient(cc grpc.ClientConnInterface) EmailServiceClient {
-	return &emailServiceClient{cc}
+func NewFrontendServiceClient(cc grpc.ClientConnInterface) FrontendServiceClient {
+	return &frontendServiceClient{cc}
 }
 
-func (c *emailServiceClient) SendEmail(ctx context.Context, in *SendEmailRequest, opts ...grpc.CallOption) (*Empty, error) {
-	out := new(Empty)
-	err := c.cc.Invoke(ctx, EmailService_SendEmail_FullMethodName, in, out, opts...)
+func (c *frontendServiceClient) Login(ctx context.Context, in *LoginRequest, opts ...grpc.CallOption) (*LoginResponse, error) {
+	out := new(LoginResponse)
+	err := c.cc.Invoke(ctx, FrontendService_Login_FullMethodName, in, out, opts...)
 	if err != nil {
 		return nil, err
 	}
 	return out, nil
 }
 
-// EmailServiceServer is the server API for EmailService service.
-// All implementations must embed UnimplementedEmailServiceServer
+func (c *frontendServiceClient) ChangePassword(ctx context.Context, in *ChangePasswordRequest, opts ...grpc.CallOption) (*ChangePasswordResponse, error) {
+	out := new(ChangePasswordResponse)
+	err := c.cc.Invoke(ctx, FrontendService_ChangePassword_FullMethodName, in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+func (c *frontendServiceClient) AddItem(ctx context.Context, in *AddItemRequest, opts ...grpc.CallOption) (*AddItemResponse, error) {
+	out := new(AddItemResponse)
+	err := c.cc.Invoke(ctx, FrontendService_AddItem_FullMethodName, in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+func (c *frontendServiceClient) ResetCart(ctx context.Context, in *EmptyCartRequest, opts ...grpc.CallOption) (*EmptyCartResponse, error) {
+	out := new(EmptyCartResponse)
+	err := c.cc.Invoke(ctx, FrontendService_ResetCart_FullMethodName, in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+func (c *frontendServiceClient) Checkout(ctx context.Context, in *PlaceOrderRequest, opts ...grpc.CallOption) (*PlaceOrderResponse, error) {
+	out := new(PlaceOrderResponse)
+	err := c.cc.Invoke(ctx, FrontendService_Checkout_FullMethodName, in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+// FrontendServiceServer is the server API for FrontendService service.
+// All implementations must embed UnimplementedFrontendServiceServer
 // for forward compatibility
-type EmailServiceServer interface {
-	SendEmail(context.Context, *SendEmailRequest) (*Empty, error)
-	mustEmbedUnimplementedEmailServiceServer()
+type FrontendServiceServer interface {
+	Login(context.Context, *LoginRequest) (*LoginResponse, error)
+	ChangePassword(context.Context, *ChangePasswordRequest) (*ChangePasswordResponse, error)
+	AddItem(context.Context, *AddItemRequest) (*AddItemResponse, error)
+	ResetCart(context.Context, *EmptyCartRequest) (*EmptyCartResponse, error)
+	Checkout(context.Context, *PlaceOrderRequest) (*PlaceOrderResponse, error)
+	mustEmbedUnimplementedFrontendServiceServer()
 }
 
-// UnimplementedEmailServiceServer must be embedded to have forward compatible implementations.
-type UnimplementedEmailServiceServer struct {
+// UnimplementedFrontendServiceServer must be embedded to have forward compatible implementations.
+type UnimplementedFrontendServiceServer struct {
 }
 
-func (UnimplementedEmailServiceServer) SendEmail(context.Context, *SendEmailRequest) (*Empty, error) {
-	return nil, status.Errorf(codes.Unimplemented, "method SendEmail not implemented")
+func (UnimplementedFrontendServiceServer) Login(context.Context, *LoginRequest) (*LoginResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method Login not implemented")
 }
-func (UnimplementedEmailServiceServer) mustEmbedUnimplementedEmailServiceServer() {}
+func (UnimplementedFrontendServiceServer) ChangePassword(context.Context, *ChangePasswordRequest) (*ChangePasswordResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method ChangePassword not implemented")
+}
+func (UnimplementedFrontendServiceServer) AddItem(context.Context, *AddItemRequest) (*AddItemResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method AddItem not implemented")
+}
+func (UnimplementedFrontendServiceServer) ResetCart(context.Context, *EmptyCartRequest) (*EmptyCartResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method ResetCart not implemented")
+}
+func (UnimplementedFrontendServiceServer) Checkout(context.Context, *PlaceOrderRequest) (*PlaceOrderResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method Checkout not implemented")
+}
+func (UnimplementedFrontendServiceServer) mustEmbedUnimplementedFrontendServiceServer() {}
 
-// UnsafeEmailServiceServer may be embedded to opt out of forward compatibility for this service.
-// Use of this interface is not recommended, as added methods to EmailServiceServer will
+// UnsafeFrontendServiceServer may be embedded to opt out of forward compatibility for this service.
+// Use of this interface is not recommended, as added methods to FrontendServiceServer will
 // result in compilation errors.
-type UnsafeEmailServiceServer interface {
-	mustEmbedUnimplementedEmailServiceServer()
+type UnsafeFrontendServiceServer interface {
+	mustEmbedUnimplementedFrontendServiceServer()
 }
 
-func RegisterEmailServiceServer(s grpc.ServiceRegistrar, srv EmailServiceServer) {
-	s.RegisterService(&EmailService_ServiceDesc, srv)
+func RegisterFrontendServiceServer(s grpc.ServiceRegistrar, srv FrontendServiceServer) {
+	s.RegisterService(&FrontendService_ServiceDesc, srv)
 }
 
-func _EmailService_SendEmail_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
-	in := new(SendEmailRequest)
+func _FrontendService_Login_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(LoginRequest)
 	if err := dec(in); err != nil {
 		return nil, err
 	}
 	if interceptor == nil {
-		return srv.(EmailServiceServer).SendEmail(ctx, in)
+		return srv.(FrontendServiceServer).Login(ctx, in)
 	}
 	info := &grpc.UnaryServerInfo{
 		Server:     srv,
-		FullMethod: EmailService_SendEmail_FullMethodName,
+		FullMethod: FrontendService_Login_FullMethodName,
 	}
 	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
-		return srv.(EmailServiceServer).SendEmail(ctx, req.(*SendEmailRequest))
+		return srv.(FrontendServiceServer).Login(ctx, req.(*LoginRequest))
 	}
 	return interceptor(ctx, in, info, handler)
 }
 
-// EmailService_ServiceDesc is the grpc.ServiceDesc for EmailService service.
+func _FrontendService_ChangePassword_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(ChangePasswordRequest)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(FrontendServiceServer).ChangePassword(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: FrontendService_ChangePassword_FullMethodName,
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(FrontendServiceServer).ChangePassword(ctx, req.(*ChangePasswordRequest))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
+func _FrontendService_AddItem_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(AddItemRequest)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(FrontendServiceServer).AddItem(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: FrontendService_AddItem_FullMethodName,
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(FrontendServiceServer).AddItem(ctx, req.(*AddItemRequest))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
+func _FrontendService_ResetCart_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(EmptyCartRequest)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(FrontendServiceServer).ResetCart(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: FrontendService_ResetCart_FullMethodName,
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(FrontendServiceServer).ResetCart(ctx, req.(*EmptyCartRequest))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
+func _FrontendService_Checkout_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(PlaceOrderRequest)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(FrontendServiceServer).Checkout(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: FrontendService_Checkout_FullMethodName,
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(FrontendServiceServer).Checkout(ctx, req.(*PlaceOrderRequest))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
+// FrontendService_ServiceDesc is the grpc.ServiceDesc for FrontendService service.
 // It's only intended for direct use with grpc.RegisterService,
 // and not to be introspected or modified (even as a copy)
-var EmailService_ServiceDesc = grpc.ServiceDesc{
-	ServiceName: "coffeeshop.EmailService",
-	HandlerType: (*EmailServiceServer)(nil),
+var FrontendService_ServiceDesc = grpc.ServiceDesc{
+	ServiceName: "coffeeshop.FrontendService",
+	HandlerType: (*FrontendServiceServer)(nil),
 	Methods: []grpc.MethodDesc{
 		{
-			MethodName: "SendEmail",
-			Handler:    _EmailService_SendEmail_Handler,
+			MethodName: "Login",
+			Handler:    _FrontendService_Login_Handler,
+		},
+		{
+			MethodName: "ChangePassword",
+			Handler:    _FrontendService_ChangePassword_Handler,
+		},
+		{
+			MethodName: "AddItem",
+			Handler:    _FrontendService_AddItem_Handler,
+		},
+		{
+			MethodName: "ResetCart",
+			Handler:    _FrontendService_ResetCart_Handler,
+		},
+		{
+			MethodName: "Checkout",
+			Handler:    _FrontendService_Checkout_Handler,
 		},
 	},
 	Streams:  []grpc.StreamDesc{},
